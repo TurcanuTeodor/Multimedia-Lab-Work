@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- every html file should be in english -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piano</title>
+    <style>  /* -- the border will add some px to the width-- */
+        #viewport{
+            width: 100vw; 
+            height: 100vh;
+            display:flex; /*1st make it a flex container so the children become flex items*/ 
+            justify-content: center; /* center horizontally -> justify-content = x-axis */
+            align-items: center; /* center vertically ->align-items = y-axis */
+        }
+
+        #keyboard {
+            background-color: rgb(3, 20, 34);
+            border: 1px solid black;
+            padding: 200px 20px 30px 20px;
+            border-radius: 30px;
+        }
+
+        #keypad{
+            /*object-fit: contain; */ /*this works only for img, video...*/
+            width:100%; 
+            background-color: rgb(25, 83, 64);
+            display: flex; /* to arrange keys in a row */
+            border-radius: 3px;
+            overflow: hidden; /* clip children so they respect the rounded corners */
+        }
+
+        .whiteKey{
+            height: 240px;
+            width: 40px;
+            border:1px solid black;
+            border-radius: 3px;
+            background-color: white;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); /* subtle inner shadow for depth */ /* without inset it would be outer shadow */
+        }
+
+        .blackKey{
+            height:140px;
+            width: 24px;
+            border-radius: 0 0 5px 5px;
+            border:1px solid black;
+            background-color: black;
+            margin: 0 -13px; /*symmetric negative margin to overlap whites*/
+            z-index : 2; /* to be on top of the white keys */
+            box-shadow: 0 3px 5px rgba(0,0,0,0.5);
+        }
+
+        .whiteKey:hover{
+            background-color:#f0f0f0;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .blackKey:hover{
+            background-color:#333;
+            box-shadow: inset 0 2px 3px rgba(255,255,255,0.2);
+        }
+
+        .whiteKey, .blackKey{ 
+            transition: all 0.1s ease; /* smooth transition for hover effect */
+            position: relative; /* to position labels absolutely within keys */
+        }
+
+        .label{
+            position: absolute;
+            bottom: 5px;
+            width: 100%;
+            text-align: center;
+            font-size:10px;
+            font-family: Arial, sans-serif;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div id="viewport">
+        <div id="keyboard"> <!-- id should be unique -->
+            <div id="keypad"> <!-- unique id for the keypad container -->
+                <div class="whiteKey"><span class="label">C</span></div>
+                <div class="blackKey"><span class="label">C#</span></div>
+                <div class="whiteKey"><span class="label">D</span></div>
+                <div class="blackKey"><span class="label">Eb</span></div>
+                <div class="whiteKey"><span class="label">E</span></div>
+                <div class="whiteKey"><span class="label">F</span></div>
+                <div class="blackKey"><span class="label">F#</span></div>
+                <div class="whiteKey"><span class="label">G</span></div>
+                <div class="blackKey"><span class="label">G#</span></div>
+                <div class="whiteKey"><span class="label">A</span></div>
+                <div class="blackKey"><span class="label">Bb</span></div>
+                <div class="whiteKey"><span class="label">B</span></div>
+                <div class="whiteKey"><span class="label">C</span></div>
+                <div class="blackKey"><span class="label">C#</span></div>
+                <div class="whiteKey"><span class="label">D</span></div>
+                <div class="blackKey"><span class="label">Eb</span></div>
+                <div class="whiteKey"><span class="label">E</span></div>
+                <div class="whiteKey"><span class="label">F</span></div>
+                <div class="blackKey"><span class="label">F#</span></div>
+                <div class="whiteKey"><span class="label">G</span></div>
+                <div class="blackKey"><span class="label">G#</span></div>
+                <div class="whiteKey"><span class="label">A</span></div>
+                <div class="blackKey"><span class="label">Bb</span></div>
+                <div class="whiteKey"><span class="label">B</span></div>
+                <div class="whiteKey"><span class="label">C</span></div>
+                <div class="blackKey"><span class="label">C#</span></div>
+                <div class="whiteKey"><span class="label">D</span></div>
+                <div class="blackKey"><span class="label">Eb</span></div>
+                <div class="whiteKey"><span class="label">E</span></div>
+                <div class="whiteKey"><span class="label">F</span></div>
+                <div class="blackKey"><span class="label">F#</span></div>
+                <div class="whiteKey"><span class="label">G</span></div>
+                <div class="blackKey"><span class="label">G#</span></div>
+                <div class="whiteKey"><span class="label">C</span></div>
+                <div class="blackKey"><span class="label">C#</span></div>
+                <div class="whiteKey"><span class="label">D</span></div>
+                <div class="blackKey"><span class="label">Eb</span></div>
+                <div class="whiteKey"><span class="label">E</span></div>
+                <div class="whiteKey"><span class="label">F</span></div>
+                <div class="blackKey"><span class="label">F#</span></div>
+                <div class="whiteKey"><span class="label">G</span></div>
+                <div class="blackKey"><span class="label">G#</span></div>
+                <div class="whiteKey"><span class="label">A</span></div>
+                <div class="blackKey"><span class="label">Bb</span></div>
+                <div class="whiteKey"><span class="label">B</span></div>           
+                <div class="whiteKey"><span class="label">C</span></div>
+                <div class="blackKey"><span class="label">C#</span></div>
+                <div class="whiteKey"><span class="label">D</span></div>
+                <div class="blackKey"><span class="label">Eb</span></div>
+                <div class="whiteKey"><span class="label">E</span></div>
+                <div class="whiteKey"><span class="label">F</span></div>
+                <div class="blackKey"><span class="label">F#</span></div>
+                <div class="whiteKey"><span class="label">G</span></div>
+                <div class="blackKey"><span class="label">G#</span></div>
+                <div class="whiteKey"><span class="label">A</span></div>
+                <div class="blackKey"><span class="label">Bb</span></div>
+                <div class="whiteKey"><span class="label">B</span></div>          
+                <div class="whiteKey"><span class="label">C</span></div>
+                <div class="blackKey"><span class="label">C#</span></div>
+                <div class="whiteKey"><span class="label">D</span></div>
+                <div class="blackKey"><span class="label">Eb</span></div>
+                <div class="whiteKey"><span class="label">E</span></div>
+                <div class="whiteKey"><span class="label">F</span></div>
+                <div class="blackKey"><span class="label">F#</span></div>
+                <div class="whiteKey"><span class="label">G</span></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
