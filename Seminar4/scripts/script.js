@@ -5,25 +5,15 @@ window.onload = function () {
     const spotifyButton = document.getElementById("spotifyButton");
     let albumsData = [];
 
-    // 1) fetch json
+    // fetch json
     fetch('assets/data/library.json')
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Could not load library.json");
-            }
-            return response.json();
-        })
-        .then((albums) => {
-            // 2) albums is an array of album objects
-            albumsData = albums;
+        .then(res => res.json())
+        .then(data => {
+            albumsData = data;
             renderAlbums(albumsData);
-        })
-        .catch((err) => {
-            console.error(err);
-            albumContainer.innerHTML = `<div class="alert alert-danger">Error loading album library.</div>`;
         });
 
-    // 3) generate cards dynamically
+    // generate cards dynamically
     function renderAlbums(albums) {
         albumContainer.innerHTML = '';
 
@@ -33,58 +23,119 @@ window.onload = function () {
 
             col.innerHTML =
                 `<div class="card h-100">
-                <img src="assets/img/${album.thumbnail}" class="card-img-top" alt="Album cover">
-                <div class="card-body">
-                    <h5 class="card-title">${album.artist}</h5>
-                    <p class="card-text">${album.album}</p>
-                </div>
-                <div class="card-footer bg-transparent border-0">
-                    <button
-                    type="button"
-                    class="btn btn-primary w-100 view-tracklist-btn"
-                    data-index="${index}"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal">
-                    View Tracklist
-                    </button>
-                </div>
+                    <img src="assets/img/${album.thumbnail}" class="card-img-top">
+                    <div class="card-body">
+                        <h5>${album.artist}</h5>
+                        <p>${album.album}</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <button class="btn btn-primary w-100 view-tracklist-btn"
+                            data-index="${index}"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">
+                            View Tracklist
+                        </button>
+                    </div>
                 </div>`;
 
             albumContainer.appendChild(col);
         });
+
+        window.scrollTo({top:0, behavior: 'smooth'});
     }
 
-    // 4) handle "View Tracklist" button clicks (event delegation)
-    albumContainer.addEventListener('click', function (e) {
+    // handle View Tracklist button clicks (event delegation)
+    albumContainer.addEventListener('click', e=> {
         const btn = e.target.closest('.view-tracklist-btn');
         if (!btn) return;
 
-        const index = btn.getAttribute('data-index');
-        const album = albumsData[index];
+        const album= albumsData[btn.dataset.index];
         if (!album) return;
 
-        // 5) populate modal
+        // populate modal
         modalTitle.textContent = `${album.artist} – ${album.album}`;
 
-        let tracklistHTML =
-            `<p><strong>Total tracks:</strong> ${album.tracklist.length}</p>
-             <ol class="list-group list-group-numbered">`;
+        //stats
+        const lengths= album.tracklist.map(t =>{
+            const [m, s]= t.trackLength.split(':').map(Number);
+            return m*60+s;
+        });
+
+        const total= lengths.reduce((a,b) => a+b, 0);
+        const avg = Math.round(total/lengths.length);
+        const max= Math.max(...lengths);
+        const min= Math.min(...lengths);
+
+        const toTime= sec=> `${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`;
+
+        let HTML =
+           `<p>
+                <strong>Total tracks:</strong> ${lengths.length}<br>
+                <strong>Total:</strong> ${toTime(total)}<br>
+                <strong>Average:</strong> ${toTime(avg)}<br>
+                <strong>Longest:</strong> ${toTime(max)}<br>
+                <strong>Shortest:</strong> ${toTime(min)}            
+            </p>
+            <ol class="list-group list-group-numbered">`;
 
         album.tracklist.forEach(track => {
-            tracklistHTML += `
+            HTML += `
                 <li class="list-group-item">
                     <a href="${track.url}" target="_blank" class="link-success">
                         ${track.title}
                     </a>
-                    <span class="text-muted"> (${track.trackLength})</span>
+                    (${track.trackLength})
                 </li>
             `;
         });
 
-        tracklistHTML += '</ol>';
-        modalBody.innerHTML = tracklistHTML;
+        HTML += '</ol>';
+        modalBody.innerHTML = HTML;
 
         // spotify button -- 1st song
         spotifyButton.href = album.tracklist[0]?.url || '#';
+
     });
+
+    //search/filter albums
+    const searchInput= document.getElementById('searchInput');
+
+    searchInput.addEventListener('input', function(){
+        const query=searchInput.value.toLowerCase().trim(); //normalise text
+
+        if(!query){
+            renderAlbums(albumsData);
+        }
+        else{
+            const filteredAlbums= albumsData.filter((album)=> 
+                album.artist.toLowerCase().includes(query) ||
+                album.album.toLowerCase().includes(query));
+            renderAlbums(filteredAlbums);
+        };
+    });
+
+    //sort 
+    const sortSelect = document.getElementById('sortSelect');
+
+    if(sortSelect)
+    {
+        sortSelect.addEventListener('change', ()=>{
+            const sorted= [...albumsData];
+            if(sortSelect.value==='artist'){
+                sorted.sort((a,b)=> a.artist.localeCompare(b.artist));
+            }
+            if(sortSelect.value==='album'){
+                sorted.sort((a,b)=> a.album.localeCompare(b.album));
+            }
+            if(sortSelect.value==='trackAsc'){
+                sorted.sort((a,b)=>a.tracklist.length-b.tracklist.length);
+            }
+            if(sortSelect.value==='trackDesc'){
+                sorted.sort((a,b)=>b.tracklist.length-a.tracklist.length);
+            }
+
+            renderAlbums(sorted);
+
+         });
+    }
 }
