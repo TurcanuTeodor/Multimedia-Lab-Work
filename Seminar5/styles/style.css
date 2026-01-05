@@ -1,10 +1,51 @@
 body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
     margin: 0;
+    font-family: Arial, sans-serif;
+    background: white;
+    color: black;
 }
-#chartCanvas {
+
+#controls {
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+canvas {
+    display: block;
+    margin: 10px auto;
     border: 1px solid black;
+}
+
+#stats {
+    padding: 10px;
+}
+
+#tooltip {
+    position: absolute;
+    background: white;
+    border: 1px solid black;
+    padding: 5px;
+    font-size: 12px;
+    display: none;
+}
+
+body.dark {
+    background: #111;
+    color: #eee;
+}
+
+body.dark canvas {
+    border-color: #eee;
+}
+
+body.contrast {
+    background: black;
+    color: white;
+}
+
+body.contrast canvas {
+    border-color: white;
 }
